@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Thêm / Cập nhật tài khoản</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <style>
+            .sidebar {
+                height: 100vh;
+                background-color: #343a40;
+                color: white;
+            }
+
+            .sidebar a {
+                color: white;
+                text-decoration: none;
+                display: block;
+                padding: 12px 20px;
+                transition: 0.3s;
+            }
+
+            .sidebar a:hover {
+                background-color: #495057;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div th:replace="admin/home :: sidebar"></div>
+
+                <div class="col-md-10 p-4">
+                    <h2 class="mb-4" th:text="${account.id == null ? 'Thêm tài khoản' : 'Cập nhật tài khoản'}"></h2>
+
+                    <form th:action="@{/admin/accounts/add}" th:object="${account}" method="post" class="row g-3">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" th:field="*{email}" class="form-control" placeholder="example@ou.edu.vn" required />
+                        </div>
+
+                        <!-- Password -->
+                        <div class="col-md-6">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" th:field="*{password}" class="form-control" required />
+                        </div>
+
+                        <!-- Role -->
+                        <div class="col-md-6">
+                            <label class="form-label">Vai trò</label>
+                            <select th:field="*{role}" class="form-select" id="roleSelect">
+                                <option value="ALUMNI">Cựu sinh viên</option>
+                                <option value="LECTURER">Giảng viên</option>
+                                <option value="ADMIN">Quản trị viên</option>
+                            </select>
+                        </div>
+
+                        <!-- Người dùng -->
+                        <div class="col-md-6" th:if="${account.id == null}">
+                            <label class="form-label">Người dùng</label>
+                            <select name="user.id" class="form-select">
+                                <option th:each="u : ${users}" th:value="${u.id}"
+                                        th:selected="${account.user != null and u.id == account.user.id}"
+                                        th:text="${u.lastName + ' ' + u.firstName + ' - ' + u.userCode}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6" th:if="${account.id != null}">
+                            <label class="form-label">Người dùng</label>
+                            <input type="hidden" name="user.id" th:value="${account.user.id}" />
+                            <input type="text" class="form-control"
+                                   th:value="${account.user.lastName + ' ' + account.user.firstName + ' - ' + account.user.userCode}" readonly />
+                        </div>
+
+                        <!-- Checkboxes -->
+                        <div class="col-md-4 form-check mt-4">
+                            <input class="form-check-input" type="checkbox" th:field="*{isActive}" id="activeCheck"/>
+                            <label class="form-check-label" for="activeCheck">Kích hoạt</label>
+                        </div>
+
+                        <div class="col-md-4 form-check mt-4">
+                            <input type="checkbox" th:field="*{isVerified}" class="form-check-input" id="verifiedCheck" />
+                            <label for="verifiedCheck" class="form-check-label">Đã xác thực</label>
+                        </div>
+
+                        <div class="col-md-4 form-check mt-4">
+                            <input type="checkbox" th:field="*{mustChangePassword}" class="form-check-input" id="mustChangeCheck" />
+                            <label for="mustChangeCheck" class="form-check-label">Yêu cầu đổi mật khẩu</label>
+                        </div>
+
+                        <!-- Hạn đổi mật khẩu (chỉ hiển thị khi cập nhật và có mustChangePassword) -->
+                        <div class="col-md-6"
+                             th:if="${account.id != null}"
+                             id="expireTimeField"
+                             th:classappend="${account.mustChangePassword} ? '' : 'd-none'">
+                            <label class="form-label">Hạn đổi mật khẩu</label>
+                            <input type="datetime-local" th:field="*{passwordExpiresAt}" class="form-control" />
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success">Lưu</button>
+                            <a th:href="@{/admin/accounts}" class="btn btn-secondary">Quay lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function togglePasswordExpire() {
+                const mustChange = document.getElementById('mustChangeCheck');
+                const expireField = document.getElementById('expireTimeField');
+                const roleSelect = document.getElementById('roleSelect');
+
+                if (!mustChange || !roleSelect)
+                    return;
+
+                const isLecturer = roleSelect.value === 'LECTURER';
+
+                if (isLecturer) {
+                    mustChange.checked = true;
+                    mustChange.disabled = true;
+                } else {
+                    mustChange.disabled = false;
+                }
+
+                if (expireField) {
+                    if (mustChange.checked) {
+                        expireField.classList.remove('d-none');
+                    } else {
+                        expireField.classList.add('d-none');
+                    }
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                togglePasswordExpire();
+
+                const roleSelect = document.getElementById('roleSelect');
+                roleSelect.addEventListener('change', togglePasswordExpire);
+
+                const mustChange = document.getElementById('mustChangeCheck');
+                mustChange.addEventListener('change', togglePasswordExpire);
+            });
+        </script>
+    </body>
+</html>
