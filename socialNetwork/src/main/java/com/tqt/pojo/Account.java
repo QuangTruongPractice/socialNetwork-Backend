@@ -4,7 +4,6 @@
  */
 package com.tqt.pojo;
 
-import com.tqt.enums.LoginType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -22,7 +21,11 @@ import com.tqt.enums.Role;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -44,8 +47,12 @@ public class Account {
     private User user;
 
     @Column(nullable = false, unique = true)
+    @Email
+    @NotBlank(message = "Email không được để trống")
     private String email;
-
+    
+    @NotBlank(message = "Password không được để trống")
+    @Size(min = 6, message = "Mật khẩu không được quá ngắn")
     private String password;
     
     @Column(name = "is_active")
@@ -55,6 +62,7 @@ public class Account {
     private Boolean mustChangePassword;
     
     @Column(name = "password_expires_at")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime passwordExpiresAt;
 
     @Enumerated(EnumType.STRING)

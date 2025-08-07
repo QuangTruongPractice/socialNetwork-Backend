@@ -11,7 +11,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Autowired
     private LocalSessionFactoryBean factory;
-    private static final int PAGE_SIZE = 6;
+    private static final int PAGE_SIZE = 10;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -46,7 +45,6 @@ public class AccountRepositoryImpl implements AccountRepository {
         q.select(root);
 
         if (params != null) {
-            // Loc du lieu
             List<Predicate> predcates = new ArrayList<>();
 
             String email = params.get("email");
@@ -71,28 +69,22 @@ public class AccountRepositoryImpl implements AccountRepository {
         }
         return query.getResultList();
     }
+    
+    @Override
+    public Integer getTotalPages(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "SELECT COUNT(a) FROM Account a";
+        Query query = s.createQuery(hql, Long.class);
+        Long count = (Long)query.getSingleResult();
+        return (int) Math.ceil(count * 1.0 / PAGE_SIZE);
+    }
 
     @Override
     public void addOrUpdateAccount(Account account) {
         Session s = this.factory.getObject().getCurrentSession();
-        if ("LECTURER".equals(account.getRole().name())) {
-            account.setMustChangePassword(true);
-            account.setPasswordExpiresAt(LocalDateTime.now().plusHours(24));
-        } else {
-            if (Boolean.TRUE.equals(account.getMustChangePassword())) {
-                account.setPasswordExpiresAt(LocalDateTime.now().plusHours(24));
-            } else {
-                account.setPasswordExpiresAt(null);
-            }
-        }
         if (account.getId() == null) {
-            account.setPassword(passwordEncoder.encode(account.getPassword()));
             s.persist(account);
         } else {
-            Account existing = s.get(Account.class, account.getId());
-            if (!existing.getPassword().equals(account.getPassword())) {
-                account.setPassword(passwordEncoder.encode(account.getPassword()));
-            }
             s.merge(account);
         }
     }
@@ -104,13 +96,61 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Account getAccountByEmail(String email) {
-        Session s = this.factory.getObject().getCurrentSession();
-        org.hibernate.query.Query<Account> q = s.createQuery(
-                "FROM Account a WHERE a.email = :email", Account.class);
-        q.setParameter("email", email);
-
-        List<Account> results = q.getResultList();
-        return results.isEmpty() ? null : results.get(0);
+    public Account getAccountByUserId(int id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        String hql = "FROM Account WHERE user.id = :userId";
+        return session.createQuery(hql, Account.class)
+                .setParameter("userId", id)
+                .uniqueResult();
     }
+
+    @Override
+    public List<Account> getAccountByGroupId(int id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        String hql = "SELECT a FROM Account a "
+                + "JOIN a.user u "
+                + "JOIN u.groups g "
+                + "WHERE g.id = :groupId";
+        return session.createQuery(hql, Account.class)
+                .setParameter("groupId", id)
+                .getResultList();
+    }
+
+    @Override
+    public Account getAccountByEmail(String email) {
+        Session session = this.factory.getObject().getCurrentSession();
+        String hql = "FROM Account a WHERE a.email = :email";
+        return session.createQuery(hql, Account.class)
+                .setParameter("email", email)
+                .uniqueResult();
+    }
+
+    @Override
+    public List<Account> getPendingAccounts() {
+        Session session = this.factory.getObject().getCurrentSession();
+        String hql = "FROM Account a WHERE a.isVerified = false";
+        return session.createQuery(hql, Account.class)
+                .getResultList();
+    }
+
+    @Override
+    public boolean existAccountByEmail(String email) {
+        Session session = factory.getObject().getCurrentSession();
+        String hql = "SELECT COUNT(a) FROM Account a WHERE a.email = :email";
+        Long count = session.createQuery(hql, Long.class)
+                .setParameter("email", email)
+                .getSingleResult();
+        return count > 0;
+    }
+
+    @Override
+    public boolean authenticate(String email, String password) {
+        Account a = this.getAccountByEmail(email);
+        if (a == null) {
+            return false;
+        }
+
+        return this.passwordEncoder.matches(password, a.getPassword());
+    }
+
 }

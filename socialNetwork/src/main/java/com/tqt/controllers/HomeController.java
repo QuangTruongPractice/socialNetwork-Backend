@@ -5,6 +5,7 @@
 package com.tqt.controllers;
 
 
+import com.tqt.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Controller;
@@ -18,12 +19,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class HomeController {
+    
+    @Autowired
+    private AccountService accService;
+    
     @Autowired
     private LocalSessionFactoryBean factory;
     
-    @RequestMapping("/")
+    @RequestMapping("/admin/")
     @Transactional
     public String home(Model model){
+        model.addAttribute("pendingAccounts", this.accService.getPendingAccounts());
         return "admin/home";
     }
     

@@ -7,6 +7,8 @@ package com.tqt.services.impl;
 import com.tqt.pojo.Account;
 import com.tqt.repositories.AccountRepository;
 import com.tqt.services.AccountService;
+import com.tqt.services.MailService;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,9 +31,19 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accRepo;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Override
     public List<Account> getAccounts(Map<String, String> params) {
         return this.accRepo.getAccounts(params);
+    }
+    
+    public Integer getTotalPages(Map<String, String> params){
+        return this.accRepo.getTotalPages(params);
     }
 
     @Override
@@ -39,7 +52,39 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Account getAccountByUserId(int id) {
+        return this.accRepo.getAccountByUserId(id);
+    }
+
+    @Override
+    public List<Account> getAccountByGroupId(int id) {
+        return this.accRepo.getAccountByGroupId(id);
+    }
+
+    @Override
     public void addOrUpdateAccount(Account account) {
+        if(this.accRepo.existAccountByEmail(account.getEmail()))
+            throw new RuntimeException("Email đã tồn tại");
+        
+        if ("LECTURER".equals(account.getRole().name())) {
+            account.setMustChangePassword(true);
+            account.setPasswordExpiresAt(LocalDateTime.now().plusHours(24));
+        } else {
+            if (Boolean.TRUE.equals(account.getMustChangePassword())) {
+                account.setPasswordExpiresAt(LocalDateTime.now().plusHours(24));
+            } else {
+                account.setPasswordExpiresAt(null);
+            }
+        }
+
+        if (account.getId() == null) {
+            account.setPassword(passwordEncoder.encode(account.getPassword()));
+        } else {
+            Account existing = accRepo.getAccountById(account.getId());
+            if (!existing.getPassword().equals(account.getPassword())) {
+                account.setPassword(passwordEncoder.encode(account.getPassword()));
+            }
+        }
         this.accRepo.addOrUpdateAccount(account);
     }
 
@@ -50,7 +95,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Account account = accRepo.getAccountByEmail(email);
+        Account account = this.accRepo.getAccountByEmail(email);
         if (account == null) {
             throw new UsernameNotFoundException("Email không tồn tại: " + email);
         }
@@ -59,13 +104,42 @@ public class AccountServiceImpl implements AccountService {
         authorities.add(new SimpleGrantedAuthority("ROLE_" + account.getRole()));
 
         return new org.springframework.security.core.userdetails.User(
-                account.getEmail(), // username là email
-                account.getPassword(), // password đã mã hóa
-                account.getIsActive(), // enabled
-                true, // accountNonExpired
-                true, // credentialsNonExpired
-                true, // accountNonLocked
+                account.getEmail(),
+                account.getPassword(),
                 authorities
         );
     }
+
+    @Override
+    public List<Account> getPendingAccounts() {
+        return this.accRepo.getPendingAccounts();
+    }
+
+    public void approveAccount(int id) {
+        Account acc = this.accRepo.getAccountById(id);
+        acc.setIsVerified(true);
+        acc.setIsActive(true);
+        this.accRepo.addOrUpdateAccount(acc);
+        String subject = "Tài khoản của bạn đã được duyệt";
+        String content = "Xin chào " + acc.getEmail() + ","
+                + "Tài khoản của bạn đã được admin phê duyệt thành công."
+                + "Bạn có thể đăng nhập và sử dụng hệ thống."
+                + "Trân trọng.";
+        try {
+            this.mailService.sendSimpleMessage(acc.getEmail(), subject, content);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean existAccountByEmail(String email) {
+        return this.accRepo.existAccountByEmail(email);
+    }
+
+    @Override
+    public boolean authenticate(String username, String password) {
+        return this.accRepo.authenticate(username, password);
+    }
+
 }

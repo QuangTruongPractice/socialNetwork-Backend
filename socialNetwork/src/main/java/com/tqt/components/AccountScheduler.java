@@ -1,7 +1,7 @@
 package com.tqt.components;
 
 import com.tqt.pojo.Account;
-import com.tqt.repositories.AccountRepository;
+import com.tqt.services.AccountService;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -13,22 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class AccountScheduler {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
-    @Scheduled(cron = "0 */5 * * * *") // mỗi giờ một lần
+    @Scheduled(cron = "0 */5 * * * *")
     public void disableExpiredAccounts() {
-        System.out.println("⏰ [Scheduler] Bắt đầu kiểm tra tài khoản lúc " + LocalDateTime.now());
-        List<Account> accounts = accountRepository.getAccounts(new HashMap<>());
+        List<Account> accounts = this.accountService.getAccounts(new HashMap<>());
         for (Account acc : accounts) {
-            if (acc.getMustChangePassword()
-                    && acc.getPasswordExpiresAt() != null
-                    && LocalDateTime.now().isAfter(acc.getPasswordExpiresAt())) {
-
-                acc.setIsActive(false); // Khóa tài khoản
-                accountRepository.addOrUpdateAccount(acc);
+            if (acc.getMustChangePassword() && acc.getPasswordExpiresAt() != null && LocalDateTime.now().isAfter(acc.getPasswordExpiresAt())) {
+                acc.setIsActive(false);
+                this.accountService.addOrUpdateAccount(acc);
             }
         }
-        System.out.println("✅ Checked for expired password accounts at " + LocalDateTime.now());
+        System.out.println(" Checked for expired password accounts at " + LocalDateTime.now());
     }
 
 

@@ -15,7 +15,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  */
 public interface AccountService extends UserDetailsService{
     List<Account> getAccounts(Map<String, String> params);
+    Integer getTotalPages(Map<String, String> params);
     Account getAccountById(int id);
+    Account getAccountByUserId(int id);
+    List<Account> getAccountByGroupId(int id);
     Account getAccountByEmail(String email);
     void addOrUpdateAccount(Account account);
+    List<Account> getPendingAccounts();
+    void approveAccount(int id);
+    boolean existAccountByEmail(String email);
+    boolean authenticate(String email, String password);
 }

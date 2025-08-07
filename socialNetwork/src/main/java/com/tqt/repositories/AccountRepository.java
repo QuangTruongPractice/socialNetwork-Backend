@@ -14,7 +14,13 @@ import java.util.Map;
  */
 public interface AccountRepository {
     List<Account> getAccounts(Map<String, String> params);
+    Integer getTotalPages(Map<String, String> params);
     Account getAccountById(int id);
+    Account getAccountByUserId(int id);
+    List<Account> getAccountByGroupId(int id);
     Account getAccountByEmail(String email);
     void addOrUpdateAccount(Account account);
+    List<Account> getPendingAccounts();
+    boolean existAccountByEmail(String email);
+    boolean authenticate(String email, String password);
 }

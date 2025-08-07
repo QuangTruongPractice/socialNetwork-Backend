@@ -7,7 +7,7 @@ package com.tqt.services;
 import com.tqt.pojo.User;
 import java.util.List;
 import java.util.Map;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -15,7 +15,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  */
 public interface UserService{
     List<User> getUsers(Map<String, String> params);
+    Integer getTotalPages(Map<String, String> params);
     User getUserById(int id);
+    User getUserByUserCode(String code);
+    boolean existUserByUserCode(String code);
     void addOrUpdateUser(User user);
     List<User> findUsersWithoutAccount();
+    List<User> findAllUserById(List<Integer> ids);
+    Object getProfileByUserId(int userId);
+    User updateUser(Map<String, String> params, MultipartFile avatar, Integer userId);
 }
