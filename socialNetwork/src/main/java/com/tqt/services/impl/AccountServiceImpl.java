@@ -41,8 +41,8 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> getAccounts(Map<String, String> params) {
         return this.accRepo.getAccounts(params);
     }
-    
-    public Integer getTotalPages(Map<String, String> params){
+
+    public Integer getTotalPages(Map<String, String> params) {
         return this.accRepo.getTotalPages(params);
     }
 
@@ -63,6 +63,19 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void addOrUpdateAccount(Account account) {
+        boolean isNew = (account.getId() == null);
+
+        if (isNew) {
+            if (accRepo.existAccountByEmail(account.getEmail())) {
+                throw new RuntimeException("Email đã tồn tại, vui lòng chọn email khác");
+            }
+        } else {
+            Account existing = accRepo.getAccountById(account.getId());
+            if (!existing.getEmail().equals(account.getEmail())
+                    && accRepo.existAccountByEmail(account.getEmail())) {
+                throw new RuntimeException("Email đã tồn tại, vui lòng chọn email khác");
+            }
+        }
         if ("LECTURER".equals(account.getRole().name())) {
             account.setMustChangePassword(true);
             account.setPasswordExpiresAt(LocalDateTime.now().plusHours(24));

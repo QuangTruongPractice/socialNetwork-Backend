@@ -64,6 +64,17 @@ public class AccountController {
 
     @PostMapping("/add")
     public String addAccount(@ModelAttribute(value = "account") @Valid Account a, BindingResult result, Model model) {
+        System.out.println("=== POST ACCOUNT DEBUG ===");
+        System.out.println("Account ID: " + a.getId());
+        System.out.println("Email: " + a.getEmail());
+        System.out.println("Password: " + (a.getPassword() != null ? "***HIDDEN***" : "null"));
+        System.out.println("Role: " + a.getRole());
+        System.out.println("Is Active: " + a.getIsActive());
+        System.out.println("Is Verified: " + a.getIsVerified());
+        System.out.println("Must Change Password: " + a.getMustChangePassword());
+        System.out.println("Password Expires At: " + a.getPasswordExpiresAt());
+        System.out.println("User ID: " + (a.getUser() != null ? a.getUser().getId() : "null"));
+        System.out.println("Has Errors: " + result.hasErrors());
         if (result.hasErrors()) {
             model.addAttribute("users", this.userService.findUsersWithoutAccount());
             return "admin/account_form";
@@ -85,6 +96,17 @@ public class AccountController {
         if (acc.getUser() != null && !users.contains(acc.getUser())) {
             users.add(acc.getUser());
         }
+        // ===== DEBUG: In ra thông tin account =====
+        System.out.println("=== EDIT ACCOUNT DEBUG ===");
+        System.out.println("Account ID: " + acc.getId());
+        System.out.println("Email: " + acc.getEmail());
+        System.out.println("Role: " + acc.getRole());
+        System.out.println("Is Active: " + acc.getIsActive());
+        System.out.println("Is Verified: " + acc.getIsVerified());
+        System.out.println("Must Change Password: " + acc.getMustChangePassword());
+        System.out.println("Password Expires At: " + acc.getPasswordExpiresAt());
+        System.out.println("User: " + (acc.getUser() != null ? acc.getUser().getFirstName() + " " + acc.getUser().getLastName() : "null"));
+        System.out.println("========================");
         model.addAttribute("account", acc);
         model.addAttribute("users", users);
         return "admin/account_form";

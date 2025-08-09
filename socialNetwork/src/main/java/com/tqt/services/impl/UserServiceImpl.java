@@ -71,6 +71,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addOrUpdateUser(User user) {
+        boolean isNew = (user.getId() == null);
+
+        if (isNew) {
+            if (userRepo.existUserByUserCode(user.getUserCode())) {
+                throw new RuntimeException("Email đã tồn tại, vui lòng chọn email khác");
+            }
+        } else {
+            User existing = userRepo.getUserById(user.getId());
+            if (!existing.getUserCode().equals(user.getUserCode())
+                    && userRepo.existUserByUserCode(user.getUserCode())) {
+                throw new RuntimeException("Email đã tồn tại, vui lòng chọn email khác");
+            }
+        }
         if (!user.getFile().isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(user.getFile().getBytes(),
