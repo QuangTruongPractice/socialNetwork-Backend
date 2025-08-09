@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Quản lý bài viết</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+        <style>
+            .table td, .table th {
+                vertical-align: middle;
+            }
+            .sidebar {
+                height: 100vh;
+                background-color: #343a40;
+                color: white;
+            }
+            .sidebar a {
+                color: white;
+                text-decoration: none;
+                display: block;
+                padding: 12px 20px;
+                transition: 0.3s;
+            }
+            .sidebar a:hover {
+                background-color: #495057;
+            }
+            img.post-img {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div th:replace="admin/home :: sidebar"></div>
+
+                <div class="col-md-10 p-4">
+                    <h2 class="mb-4">Quản lý bài viết</h2>
+
+                    <form class="row g-2 mb-4" method="get" action="">
+                        <div class="col-md-4">
+                            <input type="text" name="userName" class="form-control" placeholder="Nhập tên người dùng..." th:value="${param.userName}">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="date" name="createdAt" class="form-control" th:value="${param.createdAt}">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary">Tìm kiếm</button>
+                            <a th:href="@{/admin/posts/add}" class="btn btn-success">+ Thêm mới</a>
+                        </div>
+                    </form>
+
+                    <table class="table table-bordered table-striped align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>STT</th>
+                                <th>Nội dung</th>
+                                <th>Hình ảnh</th>
+                                <th>Người đăng</th>
+                                <th>Loại bài viết</th>
+                                <th>Khoá bình luận</th>
+                                <th>Ngày tạo</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="post, stat : ${posts}">
+                                <td th:text="${stat.index + 1}"></td>
+                                <td th:text="${#strings.abbreviate(post.content, 50)}"></td>
+                                <td>
+                                    <img th:if="${post.image != null}" th:src="@{${post.image}}" alt="image" class="post-img">
+                                    <span th:if="${post.image == null}">Không có</span>
+                                </td>
+                                <td th:text="${post.user != null ? post.user.lastName + ' ' + post.user.firstName : 'Chưa gán'}"></td>
+                                <td th:text="${post.postType}"></td>
+                                <td>
+                                    <span th:text="${post.isLocked ? '✔️' : '❌'}"></span>
+                                </td>
+                                <td th:text="${post.createdAt != null ? #temporals.format(post.createdAt, 'dd/MM/yyyy') : '—'}"></td>
+                                <td>
+                                    <a th:href="@{'/admin/posts/edit/' + ${post.id}}" class="btn btn-sm btn-warning">Sửa</a>
+                                    <a th:href="@{'/admin/posts/delete/' + ${post.id}}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Bạn có chắc muốn xóa bài viết này không?');">Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 1}">
+                        <a th:if="${currentPage <= 1}" class="btn btn-secondary me-2 disabled">Previous</a>
+                        <a th:unless="${currentPage <= 1}" 
+                           th:href="@{''(userName=${param.userName}, createdAt=${param.createdAt}, page=${currentPage - 1})}" 
+                           class="btn btn-primary me-2">Previous</a>
+
+                        <span class="btn btn-outline-secondary me-2" th:text="'Trang ' + ${currentPage}"></span>
+
+                        <a th:if="${currentPage >= totalPages}" class="btn btn-secondary disabled">Next</a>
+                        <a th:unless="${currentPage >= totalPages}" 
+                           th:href="@{''(userName=${param.userName}, createdAt=${param.createdAt}, page=${currentPage + 1})}" 
+                           class="btn btn-primary">Next</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

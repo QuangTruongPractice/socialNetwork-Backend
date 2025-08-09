@@ -48,9 +48,7 @@ public class AdminProfileServiceImpl implements AdminProfileService{
         User u = this.userRepo.getUserById(userId);
         if (u != null) {
             p.setUser(u);
-        } else {
-            throw new IllegalArgumentException("Invalid userId: " + userId);
-        }
+        } 
         p.setPosition(params.get("position"));
         p.setDescription(params.get("description"));
 
@@ -68,10 +66,6 @@ public class AdminProfileServiceImpl implements AdminProfileService{
 
     @Override
     public AdminProfile updateAdminProfile(Map<String, String> params, MultipartFile coverImage, Integer userId) {
-        User u = this.userRepo.getUserById(userId);
-        if (u == null) {
-            throw new IllegalArgumentException("Invalid userId: " + userId);
-        }
         AdminProfile p = this.adminRepo.getAdminProfileByUserId(userId);
 
         if (params.get("position") != null) {

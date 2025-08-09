@@ -15,7 +15,6 @@ import com.tqt.services.CommentService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,8 +48,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment addComment(Map<String, String> params, Integer userId, Integer postId) {
         String content = params.get("content");
-        Integer parentCommentId = params.get("parentCommentId") != null
-                ? Integer.parseInt(params.get("parentCommentId")) : null;
         Post p = this.postRepo.getPostById(postId);
         User u = this.userRepo.getUserById(userId);
 
@@ -59,13 +56,6 @@ public class CommentServiceImpl implements CommentService {
         comment.setPost(p);
         comment.setUser(u);
 
-        if (parentCommentId != null) {
-            Comment parent = this.commentRepo.getCommentById(parentCommentId);
-            if (parent == null) {
-                throw new RuntimeException("Không tìm thấy bình luận cha!");
-            }
-            comment.setParentComment(parent);
-        }
         return this.commentRepo.addComment(comment);
     }
 
@@ -73,9 +63,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentDTO updateComment(Map<String, String> params, Integer userId, Integer postId, Integer commentId) {
         Comment comment = this.commentRepo.getCommentById(commentId);
-        if (comment == null || comment.getIsDeleted() != null && comment.getIsDeleted()) {
-            throw new RuntimeException("Không tìm thấy bình luận hoặc đã bị xóa!");
-        }
+
         if (params.containsKey("content")) {
             comment.setContent(params.get("content"));
         }
@@ -93,9 +81,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void deleteComment(int id, Integer userId) {
         Comment comment = this.commentRepo.getCommentById(id);
-        if (comment == null || (comment.getIsDeleted() != null && comment.getIsDeleted())) {
-            throw new RuntimeException("Không tìm thấy bình luận hoặc đã bị xóa!");
-        }
+
         boolean isOwnerOfComment = comment.getUser().getId().equals(userId);
         boolean isOwnerOfPost = comment.getPost().getUser().getId().equals(userId);
         

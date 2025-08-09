@@ -8,7 +8,6 @@ import com.tqt.pojo.Account;
 import com.tqt.pojo.User;
 import com.tqt.services.AccountService;
 import com.tqt.services.FollowService;
-import jakarta.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;

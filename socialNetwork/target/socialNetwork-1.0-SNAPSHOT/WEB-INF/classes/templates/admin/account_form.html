@@ -23,6 +23,11 @@
             .sidebar a:hover {
                 background-color: #495057;
             }
+
+            .error-message {
+                color: red;
+                font-size: 0.9em;
+            }
         </style>
     </head>
     <body>
@@ -36,19 +41,18 @@
                     <form th:action="@{/admin/accounts/add}" th:object="${account}" method="post" class="row g-3">
                         <input type="hidden" th:field="*{id}" />
 
-                        <!-- Email -->
                         <div class="col-md-6">
                             <label class="form-label">Email</label>
                             <input type="email" th:field="*{email}" class="form-control" placeholder="example@ou.edu.vn" required />
+                            <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}" ></div>
                         </div>
 
-                        <!-- Password -->
                         <div class="col-md-6">
                             <label class="form-label">Mật khẩu</label>
                             <input type="password" th:field="*{password}" class="form-control" required />
+                            <div class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" ></div>
                         </div>
 
-                        <!-- Role -->
                         <div class="col-md-6">
                             <label class="form-label">Vai trò</label>
                             <select th:field="*{role}" class="form-select" id="roleSelect">
@@ -58,10 +62,9 @@
                             </select>
                         </div>
 
-                        <!-- Người dùng -->
                         <div class="col-md-6" th:if="${account.id == null}">
                             <label class="form-label">Người dùng</label>
-                            <select name="user.id" class="form-select">
+                            <select name="user.id" class="form-select" required>
                                 <option th:each="u : ${users}" th:value="${u.id}"
                                         th:selected="${account.user != null and u.id == account.user.id}"
                                         th:text="${u.lastName + ' ' + u.firstName + ' - ' + u.userCode}"></option>
@@ -75,7 +78,6 @@
                                    th:value="${account.user.lastName + ' ' + account.user.firstName + ' - ' + account.user.userCode}" readonly />
                         </div>
 
-                        <!-- Checkboxes -->
                         <div class="col-md-4 form-check mt-4">
                             <input class="form-check-input" type="checkbox" th:field="*{isActive}" id="activeCheck"/>
                             <label class="form-check-label" for="activeCheck">Kích hoạt</label>
@@ -91,7 +93,6 @@
                             <label for="mustChangeCheck" class="form-check-label">Yêu cầu đổi mật khẩu</label>
                         </div>
 
-                        <!-- Hạn đổi mật khẩu (chỉ hiển thị khi cập nhật và có mustChangePassword) -->
                         <div class="col-md-6"
                              th:if="${account.id != null}"
                              id="expireTimeField"
@@ -100,7 +101,6 @@
                             <input type="datetime-local" th:field="*{passwordExpiresAt}" class="form-control" />
                         </div>
 
-                        <!-- Buttons -->
                         <div class="col-12">
                             <button type="submit" class="btn btn-success">Lưu</button>
                             <a th:href="@{/admin/accounts}" class="btn btn-secondary">Quay lại</a>
@@ -113,7 +113,6 @@
         <script>
             function togglePasswordExpire() {
                 const mustChange = document.getElementById('mustChangeCheck');
-                const expireField = document.getElementById('expireTimeField');
                 const roleSelect = document.getElementById('roleSelect');
 
                 if (!mustChange || !roleSelect)
@@ -126,14 +125,6 @@
                     mustChange.disabled = true;
                 } else {
                     mustChange.disabled = false;
-                }
-
-                if (expireField) {
-                    if (mustChange.checked) {
-                        expireField.classList.remove('d-none');
-                    } else {
-                        expireField.classList.add('d-none');
-                    }
                 }
             }
 

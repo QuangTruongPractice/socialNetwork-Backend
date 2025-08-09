@@ -48,8 +48,6 @@ public class LecturerProfileServiceImpl implements LecturerProfileService{
         User u = this.userRepo.getUserById(userId);
         if (u != null) {
             p.setUser(u);
-        } else {
-            throw new IllegalArgumentException("Invalid userId: " + userId);
         }
 
         p.setPosition(params.get("position"));
@@ -58,7 +56,6 @@ public class LecturerProfileServiceImpl implements LecturerProfileService{
         p.setFaculty(params.get("faculty"));
         p.setDescription(params.get("description"));
 
-        // Upload ảnh nếu có
         if (coverImage != null && !coverImage.isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(coverImage.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
@@ -73,10 +70,6 @@ public class LecturerProfileServiceImpl implements LecturerProfileService{
 
     @Override
     public LecturerProfile updateLecturerProfile(Map<String, String> params, MultipartFile coverImage, Integer userId) {
-        User u = this.userRepo.getUserById(userId);
-        if (u == null) {
-            throw new IllegalArgumentException("Invalid userId: " + userId);
-        }
         LecturerProfile p = this.lecturerRepo.getLecturerProfileByUserId(userId);
         
         if (params.get("position") != null) {

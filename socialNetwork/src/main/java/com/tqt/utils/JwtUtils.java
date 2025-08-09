@@ -12,7 +12,6 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +22,8 @@ import java.util.Map;
  */
 public class JwtUtils {
 
-    // SECRET nên được lưu bằng biến môi trường,
-    private static final String SECRET = "12345678901234567890123456789012"; // 32 ký tự (AES key)
-    private static final long EXPIRATION_MS = 86400000; // 1 ngày
+    private static final String SECRET = "12345678901234567890123456789012";
+    private static final long EXPIRATION_MS = 86400000; 
 
     public static String generateToken(String email, String role, Integer userId, boolean mustChangePassword) throws Exception {
         JWSSigner signer = new MACSigner(SECRET);

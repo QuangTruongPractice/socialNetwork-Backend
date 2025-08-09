@@ -34,14 +34,11 @@
         <div class="container-fluid">
             <div class="row">
 
-                <!-- Sidebar -->
                 <div th:replace="admin/home :: sidebar"></div>
 
-                <!-- Main content -->
                 <div class="col-md-10 p-4">
                     <h2 class="mb-4">Quản lý người dùng</h2>
 
-                    <!-- Form tìm kiếm -->
                     <form class="row g-2 mb-4" method="get" action="">
                         <div class="col-md-4">
                             <input type="text" name="userCode" class="form-control" placeholder="Tìm theo MSSV..." value="">
@@ -52,7 +49,6 @@
                         </div>
                     </form>
 
-                    <!-- Bảng danh sách người dùng -->
                     <table class="table table-bordered table-striped align-middle">
                         <thead class="table-dark">
                             <tr>
@@ -83,6 +79,19 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="d-flex justify-content-center mt-4">
+                        <a th:if="${currentPage <= 1}" class="btn btn-secondary me-2 disabled">Previous</a>
+                        <a th:unless="${currentPage <= 1}" 
+                           th:href="@{''(userCode=${param.userCode}, page=${currentPage - 1})}" 
+                           class="btn btn-primary me-2">Previous</a>
+
+                        <span class="btn btn-outline-secondary me-2" th:text="'Trang ' + ${currentPage}"></span>
+
+                        <a th:if="${currentPage >= totalPages}" class="btn btn-secondary disabled">Next</a>
+                        <a th:unless="${currentPage >= totalPages}" 
+                           th:href="@{''(userCode=${param.userCode}, page=${currentPage + 1})}" 
+                           class="btn btn-primary">Next</a>
+                    </div>
                 </div>
             </div>
         </div>

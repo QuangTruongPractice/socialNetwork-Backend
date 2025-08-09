@@ -53,6 +53,16 @@ public class GroupRepositoryImpl implements GroupRepository{
             q.orderBy(b.desc(root.get(params.getOrDefault("sortBy", "id"))));
         }
         Query query = s.createQuery(q);
+        
+        if (params != null) {
+            String page = params.get("page");
+            if (page != null) {
+                int start = (Integer.parseInt(page) - 1) * PAGE_SIZE;
+
+                query.setFirstResult(start);
+                query.setMaxResults(PAGE_SIZE);
+            }
+        }
 
         return query.getResultList();
     }

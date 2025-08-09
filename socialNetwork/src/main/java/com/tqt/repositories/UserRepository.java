@@ -16,7 +16,6 @@ public interface UserRepository {
     List<User> getUsers(Map<String, String> params);
     Integer getTotalPages(Map<String, String> params);
     User getUserById(int id);
-    User getUserByUserCode(String code);
     boolean existUserByUserCode(String code);
     void addOrUpdateUser(User user);
     List<User> findUsersWithoutAccount();

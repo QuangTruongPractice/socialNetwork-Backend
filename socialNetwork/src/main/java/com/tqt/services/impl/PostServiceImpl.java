@@ -113,29 +113,7 @@ public class PostServiceImpl implements PostService {
         Post p = new Post();
         p.setContent(params.get("content"));
         p.setIsLocked(false);
-
-        String postTypeStr = params.get("postType");
-        if (postTypeStr != null && !postTypeStr.isEmpty()) {
-            try {
-                PostType postType = PostType.valueOf(postTypeStr.toUpperCase());
-
-                if (postType != PostType.POST) {
-                    if (role != "ADMIN") {
-                        try {
-                            throw new AccessDeniedException("Bạn không có quyền tạo bài viết loại " + postTypeStr);
-                        } catch (AccessDeniedException ex) {
-                            System.getLogger(PostServiceImpl.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-                        }
-                    }
-                }
-
-                p.setPostType(postType);
-            } catch (IllegalArgumentException ex) {
-                throw new IllegalArgumentException("Loại bài viết không hợp lệ: " + postTypeStr);
-            }
-        } else {
-            p.setPostType(PostType.POST);
-        }
+        p.setPostType(PostType.POST);
         p.setUser(user);
 
         if (image != null && !image.isEmpty()) {
@@ -204,7 +182,7 @@ public class PostServiceImpl implements PostService {
         List<SurveyOption> surveyOptions = options.stream().map(opt -> {
             SurveyOption o = new SurveyOption();
             o.setOptionText(opt);
-            o.setPost(surveyPost); // gắn post khảo sát
+            o.setPost(surveyPost);
             return o;
         }).toList();
 
@@ -263,21 +241,21 @@ public class PostServiceImpl implements PostService {
     
     @Override
     public void vote(Integer userId, Integer optionId) {
-        User user = userRepo.getUserById(userId);
-        SurveyOption option = soRepo.getSurveyOptionById(optionId);
+        User user = this.userRepo.getUserById(userId);
+        SurveyOption option = this.soRepo.getSurveyOptionById(optionId);
         Post post = option.getPost();
-        boolean hasVoted = svRepo.existsByUserIdAndPostId(userId, post.getId());
+        boolean hasVoted = this.svRepo.existsByUserIdAndPostId(userId, post.getId());
         if (hasVoted) {
             throw new RuntimeException("You have already voted in this survey!");
         }
 
         option.setVoteCount(option.getVoteCount() + 1);
-        soRepo.addOrUpdateSurveyOption(option);
+        this.soRepo.addOrUpdateSurveyOption(option);
 
         SurveyVote vote = new SurveyVote();
         vote.setUser(user);
         vote.setOption(option);
-        svRepo.addOrUpdateSurveyVote(vote);
+        this.svRepo.addOrUpdateSurveyVote(vote);
     }
 
 }

@@ -40,12 +40,10 @@ public class PostRecipient {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    // Nếu chỉ định một nhóm
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
 
-    // Nếu gửi cho tất cả, set cờ isToAll = true
     @Column(name = "is_to_all")
     private Boolean isToAll = false;
 }

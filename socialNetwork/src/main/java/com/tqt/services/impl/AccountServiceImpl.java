@@ -63,9 +63,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void addOrUpdateAccount(Account account) {
-        if(this.accRepo.existAccountByEmail(account.getEmail()))
-            throw new RuntimeException("Email đã tồn tại");
-        
         if ("LECTURER".equals(account.getRole().name())) {
             account.setMustChangePassword(true);
             account.setPasswordExpiresAt(LocalDateTime.now().plusHours(24));

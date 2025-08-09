@@ -49,11 +49,10 @@ public class ApiAuthController {
         try {
             RegisterDTO response = this.registerService.register(info, avatar);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-
         } catch (RuntimeException ex) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("error", "Đã xảy ra lỗi: " + ex.getMessage()));
+                    .body(Collections.singletonMap("error", ex.getMessage()));
         }
     }
 

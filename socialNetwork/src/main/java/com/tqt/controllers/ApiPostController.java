@@ -18,6 +18,7 @@ import com.tqt.services.PostService;
 import com.tqt.services.ReactionService;
 import com.tqt.services.UserService;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +51,10 @@ public class ApiPostController {
 
     @Autowired
     private PostService postService;
-    
+
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private AccountService accService;
 
@@ -61,7 +62,7 @@ public class ApiPostController {
     private ReactionService reactService;
 
     @Autowired
-    private CommentService commentService;  
+    private CommentService commentService;
 
     @GetMapping("/secure/posts")
     public ResponseEntity<List<PostResponseDTO>> list(@RequestParam Map<String, String> params,
@@ -116,12 +117,12 @@ public class ApiPostController {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
         String role = acc.getRole().name();
-        
+
         Post existingPost = this.postService.getPostById(postId);
         if (existingPost == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        
+
         Post updatedPost = this.postService.updatePost(info, image, userId, postId, role);
         int reactCount = this.reactService.getReactionByPostId(updatedPost.getId()).size();
         PostDTO dto = new PostDTO(updatedPost, reactCount);
@@ -144,7 +145,7 @@ public class ApiPostController {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
         String role = acc.getRole().name();
-        
+
         Post p = this.postService.addSurvey(info, image, userId, role, options);
         PostDTO dto = new PostDTO(p, 0);
         PostResponseDTO response = new PostResponseDTO(dto, null);
@@ -153,13 +154,19 @@ public class ApiPostController {
 
     @PostMapping("/secure/posts/survey/vote")
     public ResponseEntity<?> vote(@RequestBody Map<String, Integer> body, Principal principal) {
-        Account acc = this.accService.getAccountByEmail(principal.getName());
-        Integer userId = acc.getUser().getId();
-        Integer optionId = body.get("optionId");
-        postService.vote(userId, optionId);
-        return ResponseEntity.ok().body("Voted successfully!");
+        try {
+            Account acc = this.accService.getAccountByEmail(principal.getName());
+            Integer userId = acc.getUser().getId();
+            Integer optionId = body.get("optionId");
+            this.postService.vote(userId, optionId);
+            return ResponseEntity.ok().body("Voted successfully!");
+        } catch (RuntimeException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", ex.getMessage()));
+        }
     }
-    
+
     @PostMapping(path = "/secure/posts/invitation", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostResponseDTO> createInvitation(@RequestParam Map<String, String> info,
@@ -169,7 +176,7 @@ public class ApiPostController {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
         String role = acc.getRole().name();
-        
+
         Post p = this.postService.addInvitation(info, image, userId, role, recipients);
         PostDTO dto = new PostDTO(p, 0);
         PostResponseDTO response = new PostResponseDTO(dto, null);

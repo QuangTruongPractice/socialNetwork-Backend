@@ -86,15 +86,6 @@ public class UserRepositoryImpl implements UserRepository {
         Session session = this.factory.getObject().getCurrentSession();
         return session.get(User.class, id);
     }
-    
-    @Override
-    public User getUserByUserCode(String code){
-        Session session = factory.getObject().getCurrentSession();
-        String hql = "SELECT u FROM User u WHERE u.userCode = :code";
-        return session.createQuery(hql, User.class)
-                .setParameter("code", code)
-                .getSingleResult();
-    }
 
     @Override
     public boolean existUserByUserCode(String code) {

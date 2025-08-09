@@ -22,6 +22,10 @@
     <body>
         <div class="login-container">
             <h3 class="text-center mb-4">Đăng nhập Quản trị viên</h3>
+            <div th:if="${param.denied}" class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Truy cập bị từ chối!</strong> Bạn cần quyền Admin để truy cập.
+            </div>
             <form method="post" th:action="@{/login}">
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>

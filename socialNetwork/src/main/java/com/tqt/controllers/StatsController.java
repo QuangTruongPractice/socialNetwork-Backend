@@ -27,7 +27,7 @@ public class StatsController {
 
     @GetMapping
     public String statsPage(
-            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "type", required = false, defaultValue = "default") String type,
             @RequestParam(value = "year", required = false) Integer year,
             @RequestParam(value = "quarter", required = false) Integer quarter,
             @RequestParam(value = "month", required = false) Integer month,
@@ -35,7 +35,7 @@ public class StatsController {
 
         List<Object[]> userStats = new ArrayList<>();
         List<Object[]> postStats = new ArrayList<>();
-        String statType = (type != null) ? type : "year";  // Mặc định là "year"
+        String statType = type; 
 
         switch (statType) {
             case "year":

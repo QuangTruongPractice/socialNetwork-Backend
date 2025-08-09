@@ -16,7 +16,6 @@ public interface StatsRepository {
     List<Object[]> getUserStatsByQuarter(int year, int quarter);
     List<Object[]> getUserStatsByMonth(int year, int month);  
 
-    // Thống kê Post
     List<Object[]> getPostStatsByYear();       
     List<Object[]> getPostStatsByYear(int year);   
     List<Object[]> getPostStatsByQuarter(int year, int quarter); 

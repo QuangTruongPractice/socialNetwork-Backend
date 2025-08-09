@@ -9,8 +9,8 @@ import com.tqt.pojo.Account;
 import com.tqt.pojo.User;
 import com.tqt.services.AccountService;
 import com.tqt.services.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +53,8 @@ public class ApiUserController {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
         Object profile = this.userService.getProfileByUserId(userId);
-
-        if (profile == null) {
-            return new ResponseEntity<>(profile, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(profile, HttpStatus.OK);
+        boolean hasProfile = profile != null;
+        return new ResponseEntity<>(hasProfile, HttpStatus.OK);
     }
     
     @GetMapping("/users")
@@ -76,9 +72,15 @@ public class ApiUserController {
     public ResponseEntity<?> updateProfile(@RequestParam Map<String, String> params,
             @RequestParam(value = "avatar", required = false) MultipartFile avatar,
             Principal principal) {
-        Account acc = this.accService.getAccountByEmail(principal.getName());
-        Integer userId = acc.getUser().getId();
-        User u = this.userService.updateUser(params, avatar, userId);
-        return new ResponseEntity<>(u, HttpStatus.OK);
+        try {
+            Account acc = this.accService.getAccountByEmail(principal.getName());
+            Integer userId = acc.getUser().getId();
+            User u = this.userService.updateUser(params, avatar, userId);
+            return new ResponseEntity<>(u, HttpStatus.OK);
+        }catch(RuntimeException ex){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", ex.getMessage()));
+        }
     }
 }

@@ -58,8 +58,8 @@ public class UserController {
         try {
             this.userService.addOrUpdateUser(u);
         } catch (RuntimeException ex) {
-            result.rejectValue("userCode", "error.userCode", "MS này đã tồn tại");
-            return "admin/account_form";
+            result.rejectValue("userCode", "error.userCode", ex.getMessage());
+            return "admin/user_form";
         }
         return "redirect:/admin/users"; 
     }

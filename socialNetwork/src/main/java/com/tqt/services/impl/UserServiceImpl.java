@@ -63,10 +63,6 @@ public class UserServiceImpl implements UserService {
         return this.userRepo.getUserById(id);
     }
     
-    @Override
-    public User getUserByUserCode(String code) {
-        return this.userRepo.getUserByUserCode(code);
-    }
 
     @Override
     public boolean existUserByUserCode(String code) {
@@ -75,8 +71,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addOrUpdateUser(User user) {
-        if(this.userRepo.existUserByUserCode(user.getUserCode()))
-            throw new RuntimeException("MSSV đã tồn tại");
         if (!user.getFile().isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(user.getFile().getBytes(),

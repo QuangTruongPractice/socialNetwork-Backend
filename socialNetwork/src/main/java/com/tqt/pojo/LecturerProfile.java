@@ -43,11 +43,11 @@ public class LecturerProfile {
     @JsonIgnore
     private User user;
 
-    private String position;         // Chức vụ: Giảng viên, Trưởng bộ môn, Phó khoa...
+    private String position;    
     
-    private String degree;           // Học vị: Thạc sĩ, Tiến sĩ...
+    private String degree;   
 
-    private String specialization;   // Lĩnh vực chuyên môn
+    private String specialization; 
     
     private String faculty;
 

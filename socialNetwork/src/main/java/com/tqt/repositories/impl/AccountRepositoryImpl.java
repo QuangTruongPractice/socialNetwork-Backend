@@ -5,10 +5,13 @@
 package com.tqt.repositories.impl;
 
 import com.tqt.pojo.Account;
+import com.tqt.pojo.Group;
+import com.tqt.pojo.User;
 import com.tqt.repositories.AccountRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
@@ -69,13 +72,13 @@ public class AccountRepositoryImpl implements AccountRepository {
         }
         return query.getResultList();
     }
-    
+
     @Override
     public Integer getTotalPages(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
         String hql = "SELECT COUNT(a) FROM Account a";
         Query query = s.createQuery(hql, Long.class);
-        Long count = (Long)query.getSingleResult();
+        Long count = (Long) query.getSingleResult();
         return (int) Math.ceil(count * 1.0 / PAGE_SIZE);
     }
 
@@ -107,13 +110,15 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Override
     public List<Account> getAccountByGroupId(int id) {
         Session session = this.factory.getObject().getCurrentSession();
-        String hql = "SELECT a FROM Account a "
-                + "JOIN a.user u "
-                + "JOIN u.groups g "
-                + "WHERE g.id = :groupId";
-        return session.createQuery(hql, Account.class)
-                .setParameter("groupId", id)
-                .getResultList();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Account> query = cb.createQuery(Account.class);
+        Root<Account> root = query.from(Account.class);
+
+        Join<Account, User> userJoin = root.join("user");
+        Join<User, Group> groupJoin = userJoin.join("groups");
+
+        query.select(root).where(cb.equal(groupJoin.get("id"), id));
+        return session.createQuery(query).getResultList();
     }
 
     @Override

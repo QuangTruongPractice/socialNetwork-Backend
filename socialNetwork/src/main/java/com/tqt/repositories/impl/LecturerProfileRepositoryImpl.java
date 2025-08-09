@@ -40,7 +40,7 @@ public class LecturerProfileRepositoryImpl implements LecturerProfileRepository{
     @Override
     public LecturerProfile addLecturerProfile(LecturerProfile p) {
         Session s = this.factory.getObject().getCurrentSession();
-        s.persist(p); // thêm mới
+        s.persist(p);
         return p;
     }
 

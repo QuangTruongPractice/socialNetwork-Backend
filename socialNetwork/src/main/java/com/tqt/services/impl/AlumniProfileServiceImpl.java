@@ -49,8 +49,6 @@ public class AlumniProfileServiceImpl implements AlumniProfileService {
         User u = this.userRepo.getUserById(userId);
         if (u != null) {
             p.setUser(u);
-        } else {
-            throw new IllegalArgumentException("Invalid userId: " + userId);
         }
         p.setGraduationYear(Integer.parseInt(params.get("graduationYear")));
         p.setMajor(params.get("major"));
@@ -59,7 +57,6 @@ public class AlumniProfileServiceImpl implements AlumniProfileService {
         p.setCompany(params.get("company"));
         p.setDescription(params.get("description"));
 
-        // Upload ảnh nếu có
         if (coverImage != null && !coverImage.isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(coverImage.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
@@ -74,10 +71,6 @@ public class AlumniProfileServiceImpl implements AlumniProfileService {
 
     @Override
     public AlumniProfile updateAlumniProfile(Map<String, String> params, MultipartFile coverImage, Integer userId) {
-        User u = this.userRepo.getUserById(userId);
-        if (u == null) {
-            throw new IllegalArgumentException("Invalid userId: " + userId);
-        }
         AlumniProfile p = this.alumniRepo.getAlumniProfileByUserId(userId);
         if (params.get("graduationYear") != null) {
             p.setGraduationYear(Integer.parseInt(params.get("graduationYear")));
