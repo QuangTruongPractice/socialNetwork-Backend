@@ -1,6 +1,6 @@
 Mạng Xã Hội Cựu Sinh Viên - Backend API
 Mô tả dự án
-Backend API cho hệ thống mạng xã hội dành cho cựu sinh viên, giảng viên và quản trị viên trường đại học. Hệ thống được xây dựng với Spring Boot, hỗ trợ chia sẻ thông tin, tương tác xã hội, khảo sát và thống kê với kiến trúc MVC và microservices.
+Backend API cho hệ thống mạng xã hội dành cho cựu sinh viên, giảng viên và quản trị viên trường đại học. Hệ thống được xây dựng với Spring Boot, hỗ trợ chia sẻ thông tin, tương tác xã hội, khảo sát và thống kê với kiến trúc MVC.
 
 Tính năng chính
 
