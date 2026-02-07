@@ -26,44 +26,53 @@ public class PostDTO {
     private Integer id;
     private String content;
     private String image;
+    private String video;
     private String createdAt;
     private Integer authorId;
     private String authorFullname;
     private String authorAvatar;
     private Boolean isLocked = false;
     private List<SurveyOptionDTO> surveyOptions;
-    private Map<String, Long> reactions; 
+    private Map<String, Long> reactions;
     private String userReaction;
     private int totalReacts;
-    
+    private List<MediaDTO> medias;
 
     public PostDTO(Post p, int totalReacts) {
         this.id = p.getId();
         this.content = p.getContent();
         this.image = p.getImage();
+        this.video = p.getVideo();
         this.createdAt = p.getCreatedAt().toString();
-        this.authorId = p.getUser().getId();
+        this.authorId = p.getUser() != null ? p.getUser().getId() : null;
         this.authorFullname = p.getUser() != null ? p.getUser().getFirstName() + " " + p.getUser().getLastName() : null;
-        this.authorAvatar = p.getUser().getAvatar();
-        if (p.getSurveyOptions() != null) {
+        this.authorAvatar = p.getUser() != null ? p.getUser().getAvatar() : null;
+        if (p.getSurveyOptions() != null && !p.getSurveyOptions().isEmpty()) {
             this.surveyOptions = p.getSurveyOptions().stream()
                     .map(SurveyOptionDTO::new)
+                    .collect(Collectors.toList());
+        }
+        if (p.getMedias() != null && !p.getMedias().isEmpty()) {
+            this.medias = p.getMedias().stream()
+                    .map(MediaDTO::new)
                     .collect(Collectors.toList());
         }
         this.totalReacts = totalReacts;
         this.isLocked = p.getIsLocked();
     }
+
     public void setReactionsForPost(List<Reaction> reactions, User currentUser) {
         this.reactions = reactions.stream()
                 .collect(Collectors.groupingBy(
                         r -> r.getReactionType().name(),
-                        Collectors.counting()
-                ));
-        this.userReaction = reactions.stream()
-                .filter(r -> r.getUser().getId().equals(currentUser.getId()))
-                .map(r -> r.getReactionType().name())
-                .findFirst()
-                .orElse(null);
+                        Collectors.counting()));
+        if (currentUser != null) {
+            this.userReaction = reactions.stream()
+                    .filter(r -> r.getUser().getId().equals(currentUser.getId()))
+                    .map(r -> r.getReactionType().name())
+                    .findFirst()
+                    .orElse(null);
+        }
     }
-    
+
 }

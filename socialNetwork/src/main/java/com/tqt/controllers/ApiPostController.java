@@ -21,6 +21,7 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -68,17 +69,22 @@ public class ApiPostController {
     public ResponseEntity<List<PostResponseDTO>> list(@RequestParam Map<String, String> params,
             Principal principal) {
         List<Post> posts = this.postService.getPosts(params);
-        Account acc = this.accService.getAccountByEmail(principal.getName());
-        Integer userId = acc.getUser().getId();
-        User user = this.userService.getUserById(userId);
+        User user = null;
+        if (principal != null) {
+            Account acc = this.accService.getAccountByEmail(principal.getName());
+            Integer userId = acc.getUser().getId();
+            user = this.userService.getUserById(userId);
+        }
+
+        User finalUser = user;
 
         List<PostResponseDTO> result = posts.stream().map(post -> {
             int reactCount = this.reactService.getReactionByPostId(post.getId()).size();
             PostDTO postDTO = new PostDTO(post, reactCount);
             List<Reaction> reactions = this.reactService.getReactionByPostId(post.getId());
-            postDTO.setReactionsForPost(reactions, user);
+            postDTO.setReactionsForPost(reactions, finalUser);
             return new PostResponseDTO(postDTO, null);
-        }).toList();
+        }).collect(Collectors.toList());
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -88,16 +94,15 @@ public class ApiPostController {
         Post p = this.postService.getPostById(postId);
         List<Comment> comments = this.commentService.getCommentByPostId(postId);
         PostDTO postDTO = new PostDTO(p, 0);
-        List<CommentDTO> commentDTOs = comments.stream().map(CommentDTO::new).toList();
+        List<CommentDTO> commentDTOs = comments.stream().map(CommentDTO::new).collect(Collectors.toList());
 
         PostResponseDTO responseDTO = new PostResponseDTO(postDTO, commentDTOs);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/secure/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/secure/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostResponseDTO> createPost(@RequestParam Map<String, String> info,
-            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "image", required = false) List<MultipartFile> image,
             Principal principal) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
@@ -108,11 +113,10 @@ public class ApiPostController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping(path = "/secure/posts/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/secure/posts/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostResponseDTO> updatePost(@PathVariable("postId") int postId,
             @RequestParam Map<String, String> info,
-            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "image", required = false) List<MultipartFile> image,
             Principal principal) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
@@ -136,11 +140,10 @@ public class ApiPostController {
         this.postService.deletePost(id);
     }
 
-    @PostMapping(path = "/secure/posts/survey", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/secure/posts/survey", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostResponseDTO> createSurvey(@RequestParam Map<String, String> info,
             @RequestParam("options") List<String> options,
-            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "image", required = false) List<MultipartFile> image,
             Principal principal) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
@@ -167,11 +170,10 @@ public class ApiPostController {
         }
     }
 
-    @PostMapping(path = "/secure/posts/invitation", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/secure/posts/invitation", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostResponseDTO> createInvitation(@RequestParam Map<String, String> info,
             @RequestParam("recipients") List<String> recipients,
-            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "image", required = false) List<MultipartFile> image,
             Principal principal) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();

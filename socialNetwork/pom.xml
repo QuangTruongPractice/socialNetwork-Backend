@@ -11,8 +11,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jakartaee>11.0.0-M1</jakartaee>
     </properties>
-    
     <dependencies>
+        <!-- Existing dependencies -->
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
@@ -138,6 +138,22 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Boot Starter Web (for embedded Tomcat) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.3.5</version>
+             <!-- Exclude Tomcat if provided scope causes issues, but here we want it for run -->
+        </dependency>
+        
+        <!-- Explicitly include Tomcat starter for embedded run, even if provided elsewhere -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <version>3.3.5</version>
+            <!-- scope provided is fine for WAR packaging but running with spring-boot:run needs it on classpath -->
+        </dependency>
+
     </dependencies>
     
     <build>
@@ -155,6 +171,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.3.5</version>
+                <configuration>
+                    <mainClass>com.tqt.SocialNetworkApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

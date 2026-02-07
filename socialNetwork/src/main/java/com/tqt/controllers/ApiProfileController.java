@@ -19,10 +19,12 @@ import com.tqt.services.UserService;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
+@Transactional
 public class ApiProfileController {
 
     @Autowired
@@ -59,7 +62,7 @@ public class ApiProfileController {
 
     @Autowired
     private LecturerProfileService lecturerService;
-    
+
     @Autowired
     private ReactionService reactService;
 
@@ -68,7 +71,7 @@ public class ApiProfileController {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
         String role = acc.getRole().name();
-        
+
         System.out.println(role);
 
         Object profile;
@@ -79,7 +82,7 @@ public class ApiProfileController {
             PostDTO postDTO = new PostDTO(post, reactCount);
             postDTO.setReactionsForPost(reactions, user);
             return postDTO;
-        }).toList();
+        }).collect(Collectors.toList());
 
         switch (role.toUpperCase()) {
             case "ALUMNI":
@@ -109,12 +112,12 @@ public class ApiProfileController {
         Account currentAcc = this.accService.getAccountByEmail(principal.getName());
         Integer currentUserId = currentAcc.getUser().getId();
         User currentUser = this.userService.getUserById(currentUserId);
-        
+
         Account acc = this.accService.getAccountByUserId(userId);
         User user = this.userService.getUserById(userId);
         String role = acc.getRole().name();
         System.out.println(role);
-        
+
         Object profile;
         List<PostDTO> postDTOs = postService.getPostByUserId(userId).stream().map(post -> {
             List<Reaction> reactions = this.reactService.getReactionByPostId(post.getId());
@@ -122,8 +125,8 @@ public class ApiProfileController {
             PostDTO postDTO = new PostDTO(post, reactCount);
             postDTO.setReactionsForPost(reactions, currentUser);
             return postDTO;
-        }).toList();
-        
+        }).collect(Collectors.toList());
+
         switch (role.toUpperCase()) {
             case "ALUMNI":
                 profile = this.alumniService.getAlumniProfileByUserId(userId);
@@ -146,8 +149,7 @@ public class ApiProfileController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/secure/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/secure/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addProfile(@RequestParam Map<String, String> params,
             @RequestParam(value = "coverImage", required = false) MultipartFile coverImage,
             Principal principal) {
@@ -173,8 +175,7 @@ public class ApiProfileController {
         return new ResponseEntity<>(profile, HttpStatus.CREATED);
     }
 
-    @PutMapping(path = "/secure/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/secure/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProfile(@RequestParam Map<String, String> params,
             @RequestParam(value = "coverImage", required = false) MultipartFile coverImage,
             Principal principal) {

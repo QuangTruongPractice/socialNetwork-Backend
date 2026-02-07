@@ -24,16 +24,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class JwtFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        if (httpRequest.getRequestURI().startsWith(String.format("%s/api/secure", httpRequest.getContextPath())) == true) {
+        if (httpRequest.getRequestURI()
+                .startsWith(String.format("%s/api/secure", httpRequest.getContextPath())) == true) {
 
             String header = httpRequest.getHeader("Authorization");
 
             if (header == null || !header.startsWith("Bearer ")) {
-                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
+                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                        "Missing or invalid Authorization header.");
                 return;
             } else {
                 String token = header.substring(7);
@@ -47,7 +50,13 @@ public class JwtFilter implements Filter {
                         httpRequest.setAttribute("email", email);
                         httpRequest.setAttribute("role", role);
                         httpRequest.setAttribute("userId", userId);
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, null, null);
+
+                        java.util.List<org.springframework.security.core.GrantedAuthority> authorities = java.util.Collections
+                                .singletonList(
+                                        new org.springframework.security.core.authority.SimpleGrantedAuthority(role));
+
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                                email, null, authorities);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
 
                         chain.doFilter(request, response);

@@ -11,6 +11,7 @@ import com.tqt.enums.PostType;
 import com.tqt.pojo.Account;
 import com.tqt.pojo.Group;
 import com.tqt.pojo.Post;
+import com.tqt.pojo.PostMedia;
 import com.tqt.pojo.PostRecipient;
 import com.tqt.pojo.SurveyOption;
 import com.tqt.pojo.SurveyVote;
@@ -27,10 +28,12 @@ import com.tqt.services.PostService;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -38,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Quang Truong
  */
 @Service
+@Transactional
 public class PostServiceImpl implements PostService {
 
     @Autowired
@@ -89,11 +93,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void addOrUpdatePost(Post p) {
-        if (!p.getFile().isEmpty()) {
+        if (p.getFile() != null && !p.getFile().isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(p.getFile().getBytes(),
                         ObjectUtils.asMap("resource_type", "auto"));
-                p.setImage(res.get("secure_url").toString());
+                String url = res.get("secure_url").toString();
+                String resourceType = res.get("resource_type").toString();
+                if ("video".equals(resourceType)) {
+                    p.setVideo(url);
+                } else {
+                    p.setImage(url);
+                }
             } catch (IOException ex) {
                 Logger.getLogger(PostServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -106,8 +116,54 @@ public class PostServiceImpl implements PostService {
         this.postRepo.deletePost(id);
     }
 
+    private void uploadMedias(Post p, List<MultipartFile> files) {
+        if (files != null && !files.isEmpty()) {
+            java.util.ArrayList<PostMedia> medias = new java.util.ArrayList<>();
+            boolean hasVideo = false;
+            for (MultipartFile f : files) {
+                if (f != null && !f.isEmpty()) {
+                    try {
+                        Map res = cloudinary.uploader().upload(f.getBytes(),
+                                ObjectUtils.asMap("resource_type", "auto"));
+                        String url = res.get("secure_url").toString();
+                        String resourceType = res.get("resource_type").toString();
+
+                        // Rule: Only one video, multiple images
+                        if ("video".equals(resourceType)) {
+                            if (!hasVideo) {
+                                PostMedia pm = new PostMedia();
+                                pm.setPost(p);
+                                pm.setUrl(url);
+                                pm.setType("VIDEO");
+                                medias.add(pm);
+                                hasVideo = true;
+                                p.setVideo(url); // For backward compatibility
+                            }
+                        } else {
+                            PostMedia pm = new PostMedia();
+                            pm.setPost(p);
+                            pm.setUrl(url);
+                            pm.setType("IMAGE");
+                            medias.add(pm);
+                            if (p.getImage() == null)
+                                p.setImage(url); // For backward compatibility (first image)
+                        }
+                    } catch (IOException ex) {
+                        System.err.println("Upload error: " + ex.getMessage());
+                    }
+                }
+            }
+            if (p.getMedias() != null) {
+                p.getMedias().clear();
+                p.getMedias().addAll(medias);
+            } else {
+                p.setMedias(medias);
+            }
+        }
+    }
+
     @Override
-    public Post addPost(Map<String, String> params, MultipartFile image, Integer userId, String role) {
+    public Post addPost(Map<String, String> params, List<MultipartFile> images, Integer userId, String role) {
         User user = this.userRepo.getUserById(userId);
         Post p = new Post();
         p.setContent(params.get("content"));
@@ -115,21 +171,14 @@ public class PostServiceImpl implements PostService {
         p.setPostType(PostType.POST);
         p.setUser(user);
 
-        if (image != null && !image.isEmpty()) {
-            try {
-                Map res = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-                p.setImage(res.get("secure_url").toString());
-            } catch (IOException ex) {
-                System.err.println(ex.getMessage());
-            }
-        }
+        uploadMedias(p, images);
 
         this.postRepo.addOrUpdatePost(p);
         return p;
     }
 
     @Override
-    public Post updatePost(Map<String, String> params, MultipartFile image, Integer userId, Integer postId,
+    public Post updatePost(Map<String, String> params, List<MultipartFile> images, Integer userId, Integer postId,
             String role) {
         Post p = this.postRepo.getPostById(postId);
 
@@ -141,14 +190,10 @@ public class PostServiceImpl implements PostService {
             p.setContent(params.get("content"));
         }
 
-        if (image != null && !image.isEmpty()) {
-            try {
-                Map res = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-                p.setImage(res.get("secure_url").toString());
-            } catch (IOException ex) {
-                System.err.println("Lỗi upload ảnh: " + ex.getMessage());
-            }
+        if (images != null && !images.isEmpty()) {
+            uploadMedias(p, images);
         }
+
         if (params.containsKey("isLocked")) {
             p.setIsLocked(Boolean.parseBoolean(params.get("isLocked")));
         }
@@ -158,7 +203,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post addSurvey(Map<String, String> params, MultipartFile image, Integer userId, String role,
+    public Post addSurvey(Map<String, String> params, List<MultipartFile> images, Integer userId, String role,
             List<String> options) {
         if (!"ADMIN".equals(role)) {
             throw new SecurityException("Chỉ ADMIN mới được tạo khảo sát!");
@@ -171,21 +216,14 @@ public class PostServiceImpl implements PostService {
         surveyPost.setPostType(PostType.SURVEY);
         surveyPost.setUser(user);
 
-        if (image != null && !image.isEmpty()) {
-            try {
-                Map res = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-                surveyPost.setImage(res.get("secure_url").toString());
-            } catch (IOException ex) {
-                System.err.println("Lỗi upload ảnh khảo sát: " + ex.getMessage());
-            }
-        }
+        uploadMedias(surveyPost, images);
 
         List<SurveyOption> surveyOptions = options.stream().map(opt -> {
             SurveyOption o = new SurveyOption();
             o.setOptionText(opt);
             o.setPost(surveyPost);
             return o;
-        }).toList();
+        }).collect(Collectors.toList());
 
         surveyPost.setSurveyOptions(surveyOptions);
 
@@ -195,7 +233,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post addInvitation(Map<String, String> params, MultipartFile image, Integer userId, String role,
+    public Post addInvitation(Map<String, String> params, List<MultipartFile> images, Integer userId, String role,
             List<String> recipients) {
         if (!"ADMIN".equals(role)) {
             throw new SecurityException("Chỉ ADMIN mới được tạo thư mời!");
@@ -208,14 +246,8 @@ public class PostServiceImpl implements PostService {
         invitePost.setPostType(PostType.INVITATION);
         invitePost.setUser(user);
 
-        if (image != null && !image.isEmpty()) {
-            try {
-                Map res = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-                invitePost.setImage(res.get("secure_url").toString());
-            } catch (IOException ex) {
-                System.err.println("Lỗi upload ảnh khảo sát: " + ex.getMessage());
-            }
-        }
+        uploadMedias(invitePost, images);
+
         this.postRepo.addOrUpdatePost(invitePost);
         for (String recipient : recipients) {
             PostRecipient pr = new PostRecipient();

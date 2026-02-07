@@ -18,36 +18,37 @@ public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherSer
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{
-            ThymeleafConfigs.class,
-            HIbernateConfigs.class,
-            SpringSecurityConfigs.class,
-            MailConfig.class,
+        return new Class[] {
+                ThymeleafConfigs.class,
+                HIbernateConfigs.class,
+                SpringSecurityConfigs.class,
+                MailConfig.class,
         };
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{
-            WebAppContextConfigs.class
+        return new Class[] {
+                WebAppContextConfigs.class
         };
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/"};
+        return new String[] { "/" };
     }
 
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
         String location = "/";
-        long maxFileSize = 5242880;
-        long maxRequestSize = 20971520;
+        long maxFileSize = 104857600; // 100MB
+        long maxRequestSize = 157286400; // 150MB
         int fileSizeThreshold = 0;
 
-        registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
+        registration.setMultipartConfig(
+                new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
     }
-    
+
     @Override
     protected Filter[] getServletFilters() {
         return new Filter[] { new JwtFilter() };

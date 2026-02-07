@@ -57,6 +57,8 @@ public class Post {
 
     private String image;
 
+    private String video;
+
     @Column(name = "is_locked")
     private Boolean isLocked = false;
 
@@ -71,12 +73,16 @@ public class Post {
     @JsonIgnore
     private List<PostRecipient> recipients;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<PostMedia> medias;
+
     private LocalDate createdAt;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDate.now();
     }
+
     @Transient
     @JsonIgnore
     private MultipartFile file;

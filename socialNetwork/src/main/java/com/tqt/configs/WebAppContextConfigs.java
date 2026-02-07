@@ -4,7 +4,6 @@
  */
 package com.tqt.configs;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,21 +25,21 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableScheduling
 @EnableAsync
 @ComponentScan(basePackages = {
-    "com.tqt.controllers",
-    "com.tqt.repositories",
-    "com.tqt.services",
-    "com.tqt.components"
+        "com.tqt.controllers",
+        "com.tqt.repositories",
+        "com.tqt.services",
+        "com.tqt.components"
 })
 public class WebAppContextConfigs implements WebMvcConfigurer {
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
+        // configurer.enable();
     }
 
     @Bean
     public StandardServletMultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
-    
+
 }
