@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserService {
     public User getUserById(int id) {
         return this.userRepo.getUserById(id);
     }
-    
 
     @Override
     public boolean existUserByUserCode(String code) {
@@ -135,7 +134,8 @@ public class UserServiceImpl implements UserService {
             u.setDob(params.get("dob") != null ? LocalDate.parse(params.get("dob")) : null);
         }
         if (params.containsKey("gender")) {
-            u.setGender(params.get("gender") != null ? Gender.valueOf(params.get("gender").toUpperCase()) : Gender.OTHER);
+            u.setGender(
+                    params.get("gender") != null ? Gender.valueOf(params.get("gender").toUpperCase()) : Gender.OTHER);
         }
         if (params.containsKey("userCode")) {
             String newUserCode = params.get("userCode");

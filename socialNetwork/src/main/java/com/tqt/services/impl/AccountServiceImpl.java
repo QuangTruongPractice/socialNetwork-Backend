@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
  * @author Quang Truong
  */
 @Service
+@Slf4j
 public class AccountServiceImpl implements AccountService {
 
     private static final int PASSWORD_EXPIRY_HOURS = 24;

@@ -52,9 +52,9 @@ public class RegisterServiceImpl implements RegisterService {
         u.setLastName(params.get("lastName"));
         u.setDob(params.get("dob") != null ? LocalDate.parse(params.get("dob")) : null);
         u.setGender(params.get("gender") != null ? Gender.valueOf(params.get("gender").toUpperCase()) : Gender.OTHER);
-        if(this.userRepo.existUserByUserCode(params.get("userCode")))
+        if (this.userRepo.existUserByUserCode(params.get("userCode")))
             throw new RuntimeException("MSSV đã tồn tại");
-        else 
+        else
             u.setUserCode(params.get("userCode"));
         u.setPhone(params.get("phone"));
 
@@ -69,25 +69,27 @@ public class RegisterServiceImpl implements RegisterService {
         userRepo.addOrUpdateUser(u);
 
         Account acc = new Account();
-        if(this.accRepo.existAccountByEmail(params.get("email")))
+        if (this.accRepo.existAccountByEmail(params.get("email")))
             throw new RuntimeException("Email đã tồn tại");
-        else 
+        else
             acc.setEmail(params.get("email"));
         acc.setPassword(passwordEncoder.encode(params.get("password")));
         acc.setIsActive(false);
         acc.setIsVerified(false);
         acc.setMustChangePassword(false);
-        acc.setUser(u); 
+        acc.setUser(u);
         acc.setRole(Role.ALUMNI);
 
         accRepo.addOrUpdateAccount(acc);
 
-        UserDTO userDTO = new UserDTO(u.getId(), u.getFirstName(), u.getLastName(), u.getUserCode(), u.getPhone(), u.getAvatar());
-        AccountDTO accDTO = new AccountDTO(acc.getId(), acc.getEmail(), acc.getIsActive(), acc.getIsVerified(), acc.getMustChangePassword(), acc.getRole());
+        UserDTO userDTO = new UserDTO(u.getId(), u.getFirstName(), u.getLastName(), u.getUserCode(), u.getPhone(),
+                u.getAvatar());
+        AccountDTO accDTO = new AccountDTO(acc.getId(), acc.getEmail(), acc.getIsActive(), acc.getIsVerified(),
+                acc.getMustChangePassword(), acc.getRole());
 
         return new RegisterDTO(userDTO, accDTO);
     }
-    
+
     @Override
     public String changePassword(Map<String, String> body, Account acc) {
         String currentPassword = body.get("currentPassword");
@@ -101,7 +103,5 @@ public class RegisterServiceImpl implements RegisterService {
         this.accRepo.addOrUpdateAccount(acc);
         return ("Đổi mật khẩu thành công");
     }
-    
-    
 
 }
