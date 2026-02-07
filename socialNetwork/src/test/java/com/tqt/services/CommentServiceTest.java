@@ -92,6 +92,7 @@ public class CommentServiceTest extends BaseServiceTest {
         Comment existing = new Comment();
         existing.setUser(owner);
         existing.setContent("Old content");
+        existing.setCreatedDate(java.time.LocalDate.now());
 
         when(commentRepo.getCommentById(1)).thenReturn(existing);
         when(commentRepo.updateComment(any(Comment.class))).thenReturn(existing);
@@ -114,6 +115,7 @@ public class CommentServiceTest extends BaseServiceTest {
         Comment existing = new Comment();
         existing.setUser(owner);
         existing.setContent("Original");
+        existing.setCreatedDate(java.time.LocalDate.now());
 
         when(commentRepo.getCommentById(1)).thenReturn(existing);
         when(commentRepo.updateComment(any(Comment.class))).thenReturn(existing);

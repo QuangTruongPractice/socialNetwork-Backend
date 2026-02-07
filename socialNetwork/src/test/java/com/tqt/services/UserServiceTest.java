@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 public class UserServiceTest extends BaseServiceTest {
@@ -213,8 +213,8 @@ public class UserServiceTest extends BaseServiceTest {
 
         assertEquals(adminProfile, result);
         verify(adminRepo).getAdminProfileByUserId(1);
-        verify(alumniRepo, never()).getAlumniProfileByUserId(any());
-        verify(lecturerRepo, never()).getLecturerProfileByUserId(any());
+        verify(alumniRepo, never()).getAlumniProfileByUserId(anyInt());
+        verify(lecturerRepo, never()).getLecturerProfileByUserId(anyInt());
     }
 
     @Test
@@ -228,7 +228,7 @@ public class UserServiceTest extends BaseServiceTest {
         assertEquals(alumniProfile, result);
         verify(adminRepo).getAdminProfileByUserId(1);
         verify(alumniRepo).getAlumniProfileByUserId(1);
-        verify(lecturerRepo, never()).getLecturerProfileByUserId(any());
+        verify(lecturerRepo, never()).getLecturerProfileByUserId(anyInt());
     }
 
     @Test
