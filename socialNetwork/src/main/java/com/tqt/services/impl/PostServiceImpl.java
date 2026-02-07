@@ -45,10 +45,10 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private UserRepository userRepo;
-    
+
     @Autowired
     private AccountRepository accRepo;
-    
+
     @Autowired
     private GroupRepository groupRepo;
 
@@ -57,10 +57,10 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private SurveyVoteRepository svRepo;
-    
+
     @Autowired
     private PostRecipientRepository prRepo;
-    
+
     @Autowired
     private MailService mailService;
 
@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
     public List<Post> getPosts(Map<String, String> params) {
         return this.postRepo.getPosts(params);
     }
-    
+
     @Override
     public Integer getTotalPages(Map<String, String> params) {
         return this.postRepo.getTotalPages(params);
@@ -129,10 +129,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(Map<String, String> params, MultipartFile image, Integer userId, Integer postId, String role) {
+    public Post updatePost(Map<String, String> params, MultipartFile image, Integer userId, Integer postId,
+            String role) {
         Post p = this.postRepo.getPostById(postId);
 
-        if (!p.getUser().getId().equals(userId) && role != "ADMIN") {
+        if (!p.getUser().getId().equals(userId) && !"ADMIN".equals(role)) {
             throw new SecurityException("Bạn không có quyền cập nhật bài viết này!");
         }
 
@@ -157,7 +158,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post addSurvey(Map<String, String> params, MultipartFile image, Integer userId, String role, List<String> options) {
+    public Post addSurvey(Map<String, String> params, MultipartFile image, Integer userId, String role,
+            List<String> options) {
         if (!"ADMIN".equals(role)) {
             throw new SecurityException("Chỉ ADMIN mới được tạo khảo sát!");
         }
@@ -191,9 +193,10 @@ public class PostServiceImpl implements PostService {
 
         return surveyPost;
     }
-    
+
     @Override
-    public Post addInvitation(Map<String, String> params, MultipartFile image, Integer userId, String role, List<String> recipients) {
+    public Post addInvitation(Map<String, String> params, MultipartFile image, Integer userId, String role,
+            List<String> recipients) {
         if (!"ADMIN".equals(role)) {
             throw new SecurityException("Chỉ ADMIN mới được tạo thư mời!");
         }
@@ -225,19 +228,19 @@ public class PostServiceImpl implements PostService {
                 int groupId = Integer.parseInt(recipient.substring(6));
                 Group group = this.groupRepo.getGroupById(groupId);
                 pr.setGroup(group);
-                this.mailService.sendInvitationMailToGroup(new PostDTO(invitePost,0), group);
-            } else if(recipient.startsWith("account:")){
+                this.mailService.sendInvitationMailToGroup(new PostDTO(invitePost, 0), group);
+            } else if (recipient.startsWith("account:")) {
                 int accId = Integer.parseInt(recipient.substring(8));
                 Account acc = this.accRepo.getAccountById(accId);
                 pr.setAccount(acc);
-                this.mailService.sendInvitationMailToAccount(new PostDTO(invitePost,0), acc);
+                this.mailService.sendInvitationMailToAccount(new PostDTO(invitePost, 0), acc);
             }
             this.prRepo.addOrUpdatePostRecipient(pr);
         }
 
         return invitePost;
     }
-    
+
     @Override
     public void vote(Integer userId, Integer optionId) {
         User user = this.userRepo.getUserById(userId);

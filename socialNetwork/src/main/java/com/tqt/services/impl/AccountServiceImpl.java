@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountServiceImpl implements AccountService {
 
+    private static final int PASSWORD_EXPIRY_HOURS = 24;
+
     @Autowired
     private AccountRepository accRepo;
 
@@ -78,10 +80,10 @@ public class AccountServiceImpl implements AccountService {
         }
         if ("LECTURER".equals(account.getRole().name())) {
             account.setMustChangePassword(true);
-            account.setPasswordExpiresAt(LocalDateTime.now().plusHours(24));
+            account.setPasswordExpiresAt(LocalDateTime.now().plusHours(PASSWORD_EXPIRY_HOURS));
         } else {
             if (Boolean.TRUE.equals(account.getMustChangePassword())) {
-                account.setPasswordExpiresAt(LocalDateTime.now().plusHours(24));
+                account.setPasswordExpiresAt(LocalDateTime.now().plusHours(PASSWORD_EXPIRY_HOURS));
             } else {
                 account.setPasswordExpiresAt(null);
             }
@@ -91,7 +93,10 @@ public class AccountServiceImpl implements AccountService {
             account.setPassword(passwordEncoder.encode(account.getPassword()));
         } else {
             Account existing = accRepo.getAccountById(account.getId());
-            if (!existing.getPassword().equals(account.getPassword())) {
+            // Only encode if the password has changed (and is not already the same as the
+            // encrypted one)
+            if (!existing.getPassword().equals(account.getPassword()) &&
+                    !passwordEncoder.matches(account.getPassword(), existing.getPassword())) {
                 account.setPassword(passwordEncoder.encode(account.getPassword()));
             }
         }
@@ -116,8 +121,7 @@ public class AccountServiceImpl implements AccountService {
         return new org.springframework.security.core.userdetails.User(
                 account.getEmail(),
                 account.getPassword(),
-                authorities
-        );
+                authorities);
     }
 
     @Override
@@ -138,6 +142,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             this.mailService.sendSimpleMessage(acc.getEmail(), subject, content);
         } catch (Exception e) {
+            System.err.println("Failed to send approval email to " + acc.getEmail() + ": " + e.getMessage());
             e.printStackTrace();
         }
     }
