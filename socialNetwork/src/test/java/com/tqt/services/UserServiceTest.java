@@ -119,8 +119,6 @@ public class UserServiceTest extends BaseServiceTest {
     public void testAddOrUpdateUser_NewUser_UserCodeExists_ShouldThrowException() {
         User user = new User();
         user.setUserCode("123456");
-        user.setFile(mock(MultipartFile.class));
-        when(user.getFile().isEmpty()).thenReturn(true);
 
         when(userRepo.existUserByUserCode("123456")).thenReturn(true);
 
@@ -174,8 +172,6 @@ public class UserServiceTest extends BaseServiceTest {
         User updated = new User();
         updated.setId(1);
         updated.setUserCode("654321");
-        updated.setFile(mock(MultipartFile.class));
-        when(updated.getFile().isEmpty()).thenReturn(true);
 
         when(userRepo.getUserById(1)).thenReturn(existing);
         when(userRepo.existUserByUserCode("654321")).thenReturn(true);
