@@ -1,6 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.5</version>
+        <relativePath/>
+    </parent>
+    
     <groupId>com.tqt</groupId>
     <artifactId>socialNetwork</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -9,6 +17,7 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>17</java.version>
         <jakartaee>11.0.0-M1</jakartaee>
     </properties>
     <dependencies>
@@ -138,22 +147,18 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Spring Boot Starter Web (for embedded Tomcat) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>3.3.5</version>
-             <!-- Exclude Tomcat if provided scope causes issues, but here we want it for run -->
         </dependency>
         
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <version>3.3.5</version>
-            <!-- scope provided is fine for WAR packaging but running with spring-boot:run needs it on classpath -->
         </dependency>
         
-        <!-- WebSocket support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
