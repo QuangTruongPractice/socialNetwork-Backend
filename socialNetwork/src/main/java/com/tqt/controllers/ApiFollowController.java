@@ -5,15 +5,19 @@
 package com.tqt.controllers;
 
 import com.tqt.pojo.Account;
+import com.tqt.pojo.Notification;
 import com.tqt.pojo.User;
 import com.tqt.services.AccountService;
 import com.tqt.services.FollowService;
+import com.tqt.services.NotificationService;
+import com.tqt.services.UserService;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,9 +37,18 @@ public class ApiFollowController {
 
     @Autowired
     private FollowService followService;
-    
+
     @Autowired
     private AccountService accService;
+
+    @Autowired
+    private NotificationService notiService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/secure/follows/followings")
     public ResponseEntity<List<User>> getFollowings(Principal principal) {
@@ -55,16 +68,31 @@ public class ApiFollowController {
 
     @PostMapping("/secure/follows/{followingId}")
     public ResponseEntity<?> follow(Principal principal,
-            @PathVariable(value = "followingId") int followingId) {
+            @PathVariable("followingId") int followingId) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
-        Integer userId = acc.getUser().getId();
-        this.followService.follow(userId, followingId);
+        User fromUser = acc.getUser();
+        this.followService.follow(fromUser.getId(), followingId);
+
+        // Notify real-time
+        User toUser = userService.getUserById(followingId);
+        if (toUser != null) {
+            Notification n = new Notification();
+            n.setFromUser(fromUser);
+            n.setUser(toUser);
+            n.setMessage(fromUser.getFirstName() + " " + fromUser.getLastName() + " đã theo dõi bạn.");
+            notiService.addOrUpdateNotification(n);
+
+            // Send via WebSocket
+            messagingTemplate.convertAndSendToUser(
+                    String.valueOf(followingId), "/queue/notifications", n);
+        }
+
         return ResponseEntity.ok("Followed successfully");
     }
 
     @DeleteMapping("/secure/follows/{followingId}")
     public ResponseEntity<?> unfollow(Principal principal,
-            @PathVariable(value = "followingId") int followingId) {
+            @PathVariable("followingId") int followingId) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
         this.followService.unfollow(userId, followingId);
@@ -72,7 +100,7 @@ public class ApiFollowController {
     }
 
     @GetMapping("/secure/follows/check/{followId}")
-    public ResponseEntity<?> checkFollow(@PathVariable(value = "followId") int followId, Principal principal) {
+    public ResponseEntity<?> checkFollow(@PathVariable("followId") int followId, Principal principal) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
         boolean isFollowing = this.followService.checkFollowing(userId, followId);

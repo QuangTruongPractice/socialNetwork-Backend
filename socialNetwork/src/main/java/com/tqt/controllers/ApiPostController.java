@@ -90,7 +90,7 @@ public class ApiPostController {
     }
 
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<PostResponseDTO> getPostById(@PathVariable(value = "postId") int postId) {
+    public ResponseEntity<PostResponseDTO> getPostById(@PathVariable("postId") int postId) {
         Post p = this.postService.getPostById(postId);
         List<Comment> comments = this.commentService.getCommentByPostId(postId);
         PostDTO postDTO = new PostDTO(p, 0);
@@ -136,7 +136,7 @@ public class ApiPostController {
 
     @DeleteMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePost(@PathVariable(value = "postId") int id) {
+    public void deletePost(@PathVariable("postId") int id) {
         this.postService.deletePost(id);
     }
 

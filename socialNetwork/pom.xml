@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>5.3.34</version>
+            <version>6.2.8</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -146,12 +146,18 @@
              <!-- Exclude Tomcat if provided scope causes issues, but here we want it for run -->
         </dependency>
         
-        <!-- Explicitly include Tomcat starter for embedded run, even if provided elsewhere -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <version>3.3.5</version>
             <!-- scope provided is fine for WAR packaging but running with spring-boot:run needs it on classpath -->
+        </dependency>
+        
+        <!-- WebSocket support -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+            <version>3.3.5</version>
         </dependency>
 
     </dependencies>
@@ -165,6 +171,7 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
+                    <parameters>true</parameters>
                 </configuration>
             </plugin>
             <plugin>

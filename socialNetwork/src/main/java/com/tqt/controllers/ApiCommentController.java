@@ -35,13 +35,13 @@ public class ApiCommentController {
 
     @Autowired
     private CommentService commentService;
-    
+
     @Autowired
     private AccountService accService;
 
     @PostMapping("/secure/posts/{postId}/comments")
     public ResponseEntity<?> addComment(
-            @PathVariable(value = "postId") Integer postId,
+            @PathVariable("postId") Integer postId,
             @RequestBody Map<String, String> params, Principal principal) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
@@ -52,8 +52,8 @@ public class ApiCommentController {
 
     @PutMapping("/secure/posts/{postId}/comments/{commentId}")
     public ResponseEntity<CommentDTO> updateComment(
-            @PathVariable(value = "postId") Integer postId,
-            @PathVariable(value = "commentId") Integer commentId,
+            @PathVariable("postId") Integer postId,
+            @PathVariable("commentId") Integer commentId,
             @RequestBody Map<String, String> params,
             Principal principal) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
@@ -61,10 +61,10 @@ public class ApiCommentController {
         CommentDTO updated = commentService.updateComment(params, userId, postId, commentId);
         return new ResponseEntity<CommentDTO>(updated, HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/secure/comments/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteComment(@PathVariable(value = "commentId") Integer commentId, Principal principal) {
+    public void deleteComment(@PathVariable("commentId") Integer commentId, Principal principal) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
         this.commentService.deleteComment(commentId, userId);

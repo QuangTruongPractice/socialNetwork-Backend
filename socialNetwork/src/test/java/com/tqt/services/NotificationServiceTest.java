@@ -68,4 +68,19 @@ public class NotificationServiceTest extends BaseServiceTest {
         verify(notiRepo).getNotificationById(1);
         verify(notiRepo).addOrUpdateNotification(notification);
     }
+
+    @Test
+    public void testRead_AlreadyRead_ShouldStillUpdate() {
+        Notification notification = new Notification();
+        notification.setRead(true); // Already read
+
+        when(notiRepo.getNotificationById(1)).thenReturn(notification);
+        doNothing().when(notiRepo).addOrUpdateNotification(any(Notification.class));
+
+        notificationService.read(1);
+
+        assertTrue(notification.isRead()); // Still true
+        verify(notiRepo).getNotificationById(1);
+        verify(notiRepo).addOrUpdateNotification(notification);
+    }
 }

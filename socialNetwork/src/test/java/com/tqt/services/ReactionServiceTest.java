@@ -98,4 +98,44 @@ public class ReactionServiceTest extends BaseServiceTest {
         verify(reactRepo).addReaction(any(Reaction.class));
         verify(reactRepo, never()).updateReaction(any());
     }
+
+    @Test
+    public void testUpdateReaction_DifferentReactionTypes_ShouldWork() {
+        Map<String, String> params = new HashMap<>();
+        params.put("reactionType", "haha");
+
+        Reaction existing = new Reaction();
+        existing.setReactionType(ReactionType.LIKE);
+
+        when(reactRepo.getReactionByUserAndPost(5, 10)).thenReturn(existing);
+        when(reactRepo.updateReaction(any(Reaction.class))).thenReturn(existing);
+
+        Reaction result = reactionService.updateReaction(params, 5, 10);
+
+        assertEquals(ReactionType.HAHA, existing.getReactionType());
+        verify(reactRepo).updateReaction(existing);
+    }
+
+    @Test
+    public void testUpdateReaction_CreateReactionSad_Success() {
+        Map<String, String> params = new HashMap<>();
+        params.put("reactionType", "sad");
+
+        when(reactRepo.getReactionByUserAndPost(1, 2)).thenReturn(null);
+
+        Post post = new Post();
+        User user = new User();
+        when(postRepo.getPostById(2)).thenReturn(post);
+        when(userRepo.getUserById(1)).thenReturn(user);
+
+        Reaction created = new Reaction();
+        created.setReactionType(ReactionType.SAD);
+        when(reactRepo.addReaction(any(Reaction.class))).thenReturn(created);
+
+        Reaction result = reactionService.updateReaction(params, 1, 2);
+
+        assertNotNull(result);
+        assertEquals(ReactionType.SAD, created.getReactionType());
+        verify(reactRepo).addReaction(any(Reaction.class));
+    }
 }

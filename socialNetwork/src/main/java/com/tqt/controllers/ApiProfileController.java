@@ -107,7 +107,7 @@ public class ApiProfileController {
     }
 
     @GetMapping("/secure/profile/{userId}")
-    public ResponseEntity<?> getUserProfile(@PathVariable(value = "userId") Integer userId,
+    public ResponseEntity<?> getUserProfile(@PathVariable("userId") Integer userId,
             Principal principal) {
         Account currentAcc = this.accService.getAccountByEmail(principal.getName());
         Integer currentUserId = currentAcc.getUser().getId();
@@ -177,7 +177,7 @@ public class ApiProfileController {
 
     @PutMapping(path = "/secure/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProfile(@RequestParam Map<String, String> params,
-            @RequestParam(value = "coverImage", required = false) MultipartFile coverImage,
+            @RequestParam("coverImage") MultipartFile coverImage,
             Principal principal) {
         Account acc = this.accService.getAccountByEmail(principal.getName());
         Integer userId = acc.getUser().getId();
