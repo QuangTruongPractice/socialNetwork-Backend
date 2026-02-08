@@ -41,7 +41,7 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
     private User user;
@@ -50,17 +50,17 @@ public class Account {
     @Email
     @NotBlank(message = "Email không được để trống")
     private String email;
-    
+
     @NotBlank(message = "Password không được để trống")
     @Size(min = 6, message = "Mật khẩu không được quá ngắn")
     private String password;
-    
+
     @Column(name = "is_active")
     private Boolean isActive = false;
-    
+
     @Column(name = "must_change_password")
     private Boolean mustChangePassword;
-    
+
     @Column(name = "password_expires_at")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime passwordExpiresAt;
@@ -71,8 +71,9 @@ public class Account {
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
+    @Column(name = "created_at")
     private LocalDate createdAt;
-    
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDate.now();
