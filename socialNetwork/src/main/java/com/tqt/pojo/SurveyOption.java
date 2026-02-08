@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.Column;
 
 /**
  *
@@ -32,8 +33,10 @@ public class SurveyOption {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "option_text")
     private String optionText;
 
+    @Column(name = "vote_count")
     private Integer voteCount = 0;
 
     @ManyToOne

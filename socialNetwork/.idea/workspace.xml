@@ -4,7 +4,81 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89c98e4c-23da-4307-8797-1b90be753dfd" name="Changes" comment="" />
+    <list default="true" id="89c98e4c-23da-4307-8797-1b90be753dfd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tqt/pojo/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tqt/pojo/Post.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tqt/pojo/Reaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tqt/pojo/Reaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tqt/pojo/SurveyOption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tqt/pojo/SurveyOption.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tqt/pojo/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tqt/pojo/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/controllers/GroupController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/controllers/GroupController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/controllers/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/controllers/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/dto/CommentDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/dto/CommentDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/dto/GroupDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/dto/GroupDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/dto/MediaDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/dto/MediaDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/dto/PostDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/dto/PostDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/dto/ProfileResponseDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/dto/ProfileResponseDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/dto/ReactDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/dto/ReactDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/dto/SurveyOptionDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/dto/SurveyOptionDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/dto/UserDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/dto/UserDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/AdminProfile.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/AdminProfile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/AlumniProfile.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/AlumniProfile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/ChatMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/ChatMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Comment.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Comment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/ConversationDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/ConversationDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Follow.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Follow.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Group.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Group.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/LecturerProfile.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/LecturerProfile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Notification.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Notification.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Post.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Post.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/PostMedia.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/PostMedia.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Reaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/Reaction.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/SurveyOption.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/SurveyOption.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/SurveyVote.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/SurveyVote.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/pojo/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/pojo/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/AdminProfileRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/AdminProfileRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/AlumniProfileRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/AlumniProfileRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/CommentRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/CommentRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/FollowRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/FollowRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/LecturerProfileRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/LecturerProfileRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/NotificationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/NotificationRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/PostRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/PostRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/ReactionRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/ReactionRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/SurveyOptionRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/SurveyOptionRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/UserRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/AdminProfileRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/AdminProfileRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/AlumniProfileRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/AlumniProfileRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/CommentRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/CommentRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/FollowRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/FollowRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/LecturerProfileRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/LecturerProfileRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/NotificationRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/NotificationRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/PostRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/PostRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/ReactionRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/ReactionRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/StatsRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/StatsRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/SurveyOptionRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/SurveyOptionRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/UserRepositoryImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/repositories/impl/UserRepositoryImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/AdminProfileService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/AdminProfileService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/AlumniProfileService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/AlumniProfileService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/CommentService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/CommentService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/FollowService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/FollowService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/LecturerProfileService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/LecturerProfileService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/NotificationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/NotificationService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/PostService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/PostService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/ReactionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/ReactionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/SurveyOptionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/SurveyOptionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/AdminProfileServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/AdminProfileServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/AlumniProfileServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/AlumniProfileServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/ChatServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/ChatServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/CommentServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/CommentServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/FollowServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/FollowServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/LecturerProfileServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/LecturerProfileServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/NotificationServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/NotificationServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/ReactionServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/ReactionServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/SurveyOptionServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/SurveyOptionServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/tqt/services/impl/UserServiceImpl.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,7 +154,7 @@
       <workItem from="1770464175964" duration="3935000" />
       <workItem from="1770530265315" duration="4555000" />
       <workItem from="1770540652694" duration="2490000" />
-      <workItem from="1770554776083" duration="310000" />
+      <workItem from="1770554776083" duration="1994000" />
     </task>
     <servers />
   </component>

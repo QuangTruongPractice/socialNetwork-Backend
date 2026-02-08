@@ -53,6 +53,7 @@ public class Reaction {
     @Column(name = "reaction_type", nullable = false)
     private ReactionType reactionType;
 
+    @Column(name = "created_date")
     private LocalDate createdDate;
 
     @PrePersist

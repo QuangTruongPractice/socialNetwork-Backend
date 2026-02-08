@@ -76,6 +76,7 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<PostMedia> medias;
 
+    @Column(name = "created_at")
     private LocalDate createdAt;
 
     @PrePersist

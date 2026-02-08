@@ -38,7 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Quang Truong
  */
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
