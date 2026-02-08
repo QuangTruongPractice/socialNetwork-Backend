@@ -490,7 +490,13 @@ public class PostServiceTest extends BaseServiceTest {
         admin.setId(1);
         when(userRepo.getUserById(1)).thenReturn(admin);
 
-        doNothing().when(postRepo).addOrUpdatePost(any(Post.class));
+        // Mock postRepo to set createdAt when addOrUpdatePost is called
+        doAnswer(invocation -> {
+            Post p = invocation.getArgument(0);
+            p.setCreatedAt(java.time.LocalDate.now());
+            return null;
+        }).when(postRepo).addOrUpdatePost(any(Post.class));
+
         doNothing().when(prRepo).addOrUpdatePostRecipient(any(PostRecipient.class));
         doNothing().when(mailService).sendInvitationMailToAll(any(PostDTO.class));
 
@@ -517,7 +523,13 @@ public class PostServiceTest extends BaseServiceTest {
         group.setId(10);
         when(groupRepo.getGroupById(10)).thenReturn(group);
 
-        doNothing().when(postRepo).addOrUpdatePost(any(Post.class));
+        // Mock postRepo to set createdAt when addOrUpdatePost is called
+        doAnswer(invocation -> {
+            Post p = invocation.getArgument(0);
+            p.setCreatedAt(java.time.LocalDate.now());
+            return null;
+        }).when(postRepo).addOrUpdatePost(any(Post.class));
+
         doNothing().when(prRepo).addOrUpdatePostRecipient(any(PostRecipient.class));
         doNothing().when(mailService).sendInvitationMailToGroup(any(PostDTO.class), any(Group.class));
 
@@ -545,7 +557,13 @@ public class PostServiceTest extends BaseServiceTest {
         account.setId(50);
         when(accRepo.getAccountById(50)).thenReturn(account);
 
-        doNothing().when(postRepo).addOrUpdatePost(any(Post.class));
+        // Mock postRepo to set createdAt when addOrUpdatePost is called
+        doAnswer(invocation -> {
+            Post p = invocation.getArgument(0);
+            p.setCreatedAt(java.time.LocalDate.now());
+            return null;
+        }).when(postRepo).addOrUpdatePost(any(Post.class));
+
         doNothing().when(prRepo).addOrUpdatePostRecipient(any(PostRecipient.class));
         doNothing().when(mailService).sendInvitationMailToAccount(any(PostDTO.class), any(Account.class));
 
@@ -578,7 +596,13 @@ public class PostServiceTest extends BaseServiceTest {
         account.setId(20);
         when(accRepo.getAccountById(20)).thenReturn(account);
 
-        doNothing().when(postRepo).addOrUpdatePost(any(Post.class));
+        // Mock postRepo to set createdAt when addOrUpdatePost is called
+        doAnswer(invocation -> {
+            Post p = invocation.getArgument(0);
+            p.setCreatedAt(java.time.LocalDate.now());
+            return null;
+        }).when(postRepo).addOrUpdatePost(any(Post.class));
+
         doNothing().when(prRepo).addOrUpdatePostRecipient(any(PostRecipient.class));
         doNothing().when(mailService).sendInvitationMailToAll(any(PostDTO.class));
         doNothing().when(mailService).sendInvitationMailToGroup(any(PostDTO.class), any(Group.class));
