@@ -71,7 +71,7 @@ public class Account {
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
-    @Column(name = "created_at")
+    @Column(name = "createdAt")
     private LocalDate createdAt;
 
     @PrePersist
